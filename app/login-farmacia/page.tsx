@@ -88,11 +88,13 @@ export default function LoginFarmaciaPage() {
     <div className="min-h-screen bg-gradient-to-br from-[#4ED3C2] to-[#1ABBB3] flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <div className="bg-gradient-to-br from-[#4ED3C2] to-[#1ABBB3] p-3 rounded-xl">
-              <Pill className="h-8 w-8 text-white" />
-            </div>
-          </div>
+            <div className="flex justify-center mb-4">
+                <img 
+                  src="https://zvxxdmfljbtlenjatqgm.supabase.co/storage/v1/object/public/farmacias-logos/Farmafacil.png"
+                  alt="Logo FarmaFácil"
+                  className="w-20 h-20 object-contain"
+                />
+              </div>
           <CardTitle className="text-3xl font-bold text-[#1A1A1A]">
             Login Farmacia
           </CardTitle>
