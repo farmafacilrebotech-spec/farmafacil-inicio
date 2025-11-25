@@ -1,0 +1,31 @@
+[
+    {
+      "pedido_id": "D1023",
+      "cliente": "Laura G.",
+      "total": 18.45,
+      "estado": "recibido",
+      "productos": [
+        { "nombre": "Tiritas Antibacterianas", "cantidad": 1 },
+        { "nombre": "Crema Hidratante Facial", "cantidad": 1 }
+      ]
+    },
+    {
+      "pedido_id": "D1024",
+      "cliente": "Kiosko – Mostrador",
+      "total": 9.90,
+      "estado": "preparado",
+      "productos": [
+        { "nombre": "Voltadol Roll-On 50ml", "cantidad": 1 }
+      ]
+    },
+    {
+      "pedido_id": "D1025",
+      "cliente": "Jorge P.",
+      "total": 3.50,
+      "estado": "entregado",
+      "productos": [
+        { "nombre": "Tiritas Antibacterianas", "cantidad": 1 }
+      ]
+    }
+  ]
+  

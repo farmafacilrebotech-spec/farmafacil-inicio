@@ -1,0 +1,11 @@
+{
+    "farmacia_id": "F012-DEMO",
+    "nombre": "Farmacia Mediterráneo",
+    "logo_url": "/demo/logo-mediterraneo.png",
+    "direccion": "C/ Doctor Sanchis Palmer 14, 46009 Valencia",
+    "telefono": "963245890",
+    "email": "info@farmaciamediterraneo.com",
+    "horario": "L–V: 8:30–20:30 · S: 9:00–14:00",
+    "color_principal": "#2CD4C2"
+  }
+  

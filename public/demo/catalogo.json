@@ -1,0 +1,83 @@
+[
+    {
+      "id": "P001",
+      "nombre": "Voltadol Forte Gel 100g",
+      "precio": 12.95,
+      "stock": 5,
+      "categoria": "Cuidado Muscular",
+      "imagen": "/demo/voltadol-forte.png"
+    },
+    {
+      "id": "P002",
+      "nombre": "Tiritas Adhesivas Antibacterianas (20 uds)",
+      "precio": 3.50,
+      "stock": 40,
+      "categoria": "Botiquín",
+      "imagen": "/demo/tiritas-antibacterianas.png"
+    },
+    {
+      "id": "P003",
+      "nombre": "Tiritas Kids con Dibujos (18 uds)",
+      "precio": 2.95,
+      "stock": 25,
+      "categoria": "Botiquín Infantil",
+      "imagen": "/demo/tiritas-kids.png"
+    },
+    {
+      "id": "P004",
+      "nombre": "Voltadol Emulgel Roll-On 50ml",
+      "precio": 9.90,
+      "stock": 10,
+      "categoria": "Cuidado Muscular",
+      "imagen": "/demo/voltadol-rollon.png"
+    },
+    {
+      "id": "P005",
+      "nombre": "Gel Frío Muscular Piernas Cansadas 150ml",
+      "precio": 7.90,
+      "stock": 8,
+      "categoria": "Cuidado Muscular",
+      "imagen": "/demo/gel-frio.png"
+    },
+    {
+      "id": "P006",
+      "nombre": "Crema Hidratante Facial Piel Sensible 50ml",
+      "precio": 14.95,
+      "stock": 12,
+      "categoria": "Dermocosmética",
+      "imagen": "/demo/crema-hidratante.png"
+    },
+    {
+      "id": "P007",
+      "nombre": "Agua Micelar Calmante 400ml",
+      "precio": 8.60,
+      "stock": 20,
+      "categoria": "Dermocosmética",
+      "imagen": "/demo/agua-micelar.png"
+    },
+    {
+      "id": "P008",
+      "nombre": "Protector Solar SPF50+ Rostro 50ml",
+      "precio": 15.40,
+      "stock": 4,
+      "categoria": "Fotoprotección",
+      "imagen": "/demo/spf50.png"
+    },
+    {
+      "id": "P009",
+      "nombre": "Champú Anticaspa Suave 400ml",
+      "precio": 8.90,
+      "stock": 6,
+      "categoria": "Cabello",
+      "imagen": "/demo/champu-anticaspa.png"
+    },
+    {
+      "id": "P010",
+      "nombre": "Spray Antibacteriano de Manos 100ml",
+      "precio": 2.50,
+      "stock": 35,
+      "categoria": "Higiene",
+      "imagen": "/demo/spray-manos.png"
+    }
+  ]
+  
