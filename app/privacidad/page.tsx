@@ -182,7 +182,7 @@ export default function PrivacidadPage() {
               <p className="mb-4 leading-relaxed">
                 Podemos actualizar esta política de privacidad periódicamente. Le notificaremos 
                 sobre cambios significativos publicando la nueva política en esta página y 
-                actualizando la fecha de "última actualización".
+                actualizando la fecha de &quot;última actualización&quot;.
               </p>
             </section>
 

@@ -103,7 +103,7 @@ export default function TerminosPage() {
                 7. Limitación de Responsabilidad
               </h2>
               <p className="mb-4 leading-relaxed">
-                FarmaFácil se proporciona "tal cual" y "según disponibilidad". No garantizamos que 
+                FarmaFácil se proporciona &quot;tal cual&quot; y &quot;según disponibilidad&quot;. No garantizamos que 
                 el servicio será ininterrumpido, seguro o libre de errores. En ningún caso seremos 
                 responsables por daños indirectos, incidentales o consecuentes.
               </p>

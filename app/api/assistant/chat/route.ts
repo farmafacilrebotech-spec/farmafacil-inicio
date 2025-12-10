@@ -18,17 +18,21 @@ export async function POST(request: Request) {
     let farmaciaName = "FarmaFácil";
     let farmaciaIdReal = null;
     
-    // Solo buscar farmacia si NO es "general"
-    if (farmacia_id && farmacia_id !== "general") {
-      const { data: farmacia } = await supabase
-        .from("farmacias")
-        .select("id, nombre")
-        .eq("id", farmacia_id)
-        .single();
-      
-      if (farmacia) {
-        farmaciaName = farmacia.nombre;
-        farmaciaIdReal = farmacia.id;
+    // Solo buscar farmacia si NO es "general" y supabase está configurado
+    if (farmacia_id && farmacia_id !== "general" && process.env.NEXT_PUBLIC_SUPABASE_URL) {
+      try {
+        const { data: farmacia } = await supabase
+          .from("farmacias")
+          .select("id, nombre")
+          .eq("id", farmacia_id)
+          .single();
+        
+        if (farmacia) {
+          farmaciaName = farmacia.nombre;
+          farmaciaIdReal = farmacia.id;
+        }
+      } catch (error) {
+        console.warn("Could not fetch farmacia data:", error);
       }
     }
 
@@ -52,14 +56,18 @@ Si la consulta es médica seria, recomienda consultar con un profesional de la s
     if (!openaiApiKey) {
       const mockResponse = `Hola! Soy el asistente virtual de ${farmaciaName}. Por el momento estoy en modo de prueba. ¿En qué puedo ayudarte hoy?`;
 
-      // Solo guardar si hay un farmacia_id válido
-      if (farmaciaIdReal) {
-        await supabase.from("conversaciones").insert({
-          farmacia_id: farmaciaIdReal,
-          cliente_id: cliente_id || null,
-          mensaje_usuario: mensaje,
-          respuesta_ia: mockResponse,
-        });
+      // Solo guardar si hay un farmacia_id válido y supabase está configurado
+      if (farmaciaIdReal && process.env.NEXT_PUBLIC_SUPABASE_URL) {
+        try {
+          await supabase.from("conversaciones").insert({
+            farmacia_id: farmaciaIdReal,
+            cliente_id: cliente_id || null,
+            mensaje_usuario: mensaje,
+            respuesta_ia: mockResponse,
+          });
+        } catch (error) {
+          console.warn("Could not save conversation:", error);
+        }
       }
 
       return NextResponse.json({
@@ -92,14 +100,18 @@ Si la consulta es médica seria, recomienda consultar con un profesional de la s
     const data = await response.json();
     const respuestaIA = data.choices[0]?.message?.content || "Lo siento, no pude procesar tu consulta.";
 
-    // Solo guardar si hay un farmacia_id válido
-    if (farmaciaIdReal) {
-      await supabase.from("conversaciones").insert({
-        farmacia_id: farmaciaIdReal,
-        cliente_id: cliente_id || null,
-        mensaje_usuario: mensaje,
-        respuesta_ia: respuestaIA,
-      });
+    // Solo guardar si hay un farmacia_id válido y supabase está configurado
+    if (farmaciaIdReal && process.env.NEXT_PUBLIC_SUPABASE_URL) {
+      try {
+        await supabase.from("conversaciones").insert({
+          farmacia_id: farmaciaIdReal,
+          cliente_id: cliente_id || null,
+          mensaje_usuario: mensaje,
+          respuesta_ia: respuestaIA,
+        });
+      } catch (error) {
+        console.warn("Could not save conversation:", error);
+      }
     }
 
     return NextResponse.json({

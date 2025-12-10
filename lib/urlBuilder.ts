@@ -12,7 +12,7 @@
  * @returns URL completa al catálogo de cliente de la farmacia
  */
 export function clienteUrl(codigo: string): string {
-  const baseUrl = process.env.NEXT_PUBLIC_CLIENTES_URL || 'https://farmafacil-clientes.netlify.app';
+  const baseUrl = process.env.NEXT_PUBLIC_CLIENTES_URL || 'https://farmafacil-clientes.vercel.app';
   return `${baseUrl}/farmacia/${codigo}`;
 }
 
@@ -22,7 +22,7 @@ export function clienteUrl(codigo: string): string {
  * @returns URL completa al kiosko de la farmacia
  */
 export function kioskoUrl(codigo: string): string {
-  const baseUrl = process.env.NEXT_PUBLIC_KIOSKO_URL || 'https://farmafacil-kiosko.netlify.app';
+  const baseUrl = process.env.NEXT_PUBLIC_KIOSKO_URL || 'https://farmafacil-kiosko.vercel.app';
   return `${baseUrl}/farmacia/${codigo}?kiosk=1`;
 }
 

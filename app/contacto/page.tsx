@@ -203,7 +203,7 @@ export default function ContactoPage() {
                   </div>
 
                   <p className="text-xs text-gray-500">
-                    Tus datos serán tratados por <b>ReboTech Solutions S.L.U.</b> con la finalidad
+                    Tus datos serán tratados por <b>ReboTech Solutions </b> con la finalidad
                     de gestionar tu solicitud e informarte sobre productos o futuros programas de
                     aceleración. Puedes ejercer tus derechos escribiendo a{" "}
                     <a
