@@ -13,8 +13,6 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
-import FloatingAssistantButton from "@/components/assistants/FloatingAssistantButton";
-import CartButton from "@/components/cart/CartButton";
 
 export default function Home() {
   return (
@@ -263,12 +261,6 @@ export default function Home() {
       </section>
 
       <Footer />
-      
-      {/* Botón flotante del asistente */}
-      <FloatingAssistantButton />
-      
-      {/* Botón flotante del carrito */}
-      <CartButton />
     </div>
   );
 }
