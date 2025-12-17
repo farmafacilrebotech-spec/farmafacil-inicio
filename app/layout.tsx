@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Script from "next/script";
 import { Toaster } from '@/components/ui/toaster';
+import { CartProvider } from '@/context/CartContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -37,7 +38,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
 
-        {children}
+        <CartProvider>
+          {children}
+        </CartProvider>
         <Toaster />
       </body>
     </html>

@@ -1,10 +1,11 @@
 "use client";
 
-import { X, Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import { X, Minus, Plus, Trash2, ShoppingBag, MapPin, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { formatDistance } from "@/lib/distance";
 
 interface CartSidebarProps {
   isOpen: boolean;
@@ -12,13 +13,17 @@ interface CartSidebarProps {
 }
 
 export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
-  const { cart, total, updateQuantity, removeFromCart } = useCart();
+  const { cart, total, updateQuantity, removeFromCart, farmaciaAsignada, clearFarmaciaAsignada } = useCart();
   const router = useRouter();
 
   const handleCheckout = () => {
     onClose();
     router.push("/checkout");
   };
+
+  // Verificar si hay productos de diferentes farmacias
+  const farmaciasEnCarrito = Array.from(new Set(cart.map(item => item.farmacia_id)));
+  const tieneMultiplesFarmacias = farmaciasEnCarrito.length > 1;
 
   if (!isOpen) return null;
 
@@ -131,6 +136,43 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
         {/* Footer con total y botón */}
         {cart.length > 0 && (
           <div className="border-t p-6 space-y-4">
+            {/* Mostrar farmacia asignada si existe */}
+            {farmaciaAsignada && (
+              <div className="bg-[#4ED3C2] bg-opacity-10 rounded-lg p-3">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start gap-2">
+                    <Store className="h-5 w-5 text-[#1ABBB3] mt-0.5" />
+                    <div>
+                      <p className="font-medium text-[#1A1A1A]">
+                        {farmaciaAsignada.nombre}
+                      </p>
+                      {farmaciaAsignada.distancia && (
+                        <p className="text-sm text-gray-600 flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          A {formatDistance(farmaciaAsignada.distancia)}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <button
+                    onClick={clearFarmaciaAsignada}
+                    className="text-xs text-gray-500 hover:text-gray-700"
+                  >
+                    Cambiar
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Aviso si hay productos de múltiples farmacias */}
+            {tieneMultiplesFarmacias && !farmaciaAsignada && (
+              <div className="bg-yellow-50 rounded-lg p-3 text-sm text-yellow-800">
+                <p>
+                  Tienes productos de diferentes farmacias. Al pagar, se asignará la farmacia más cercana.
+                </p>
+              </div>
+            )}
+
             <div className="flex justify-between items-center">
               <span className="text-lg font-semibold text-gray-700">
                 Total:

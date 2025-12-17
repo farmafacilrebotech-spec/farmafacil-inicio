@@ -7,18 +7,24 @@ import {
   clearCart as clearCartLib,
   getCartTotal,
   getCartItemCount,
-  CartItem
+  getFarmaciaAsignada,
+  setFarmaciaAsignada as setFarmaciaLib,
+  clearFarmaciaAsignada as clearFarmaciaLib,
+  CartItem,
+  FarmaciaAsignada
 } from "@/lib/cart";
 
 export function useCart() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [total, setTotal] = useState(0);
   const [itemCount, setItemCount] = useState(0);
+  const [farmaciaAsignada, setFarmaciaAsignadaState] = useState<FarmaciaAsignada | null>(null);
 
   const updateCart = () => {
     setCart(getCart());
     setTotal(getCartTotal());
     setItemCount(getCartItemCount());
+    setFarmaciaAsignadaState(getFarmaciaAsignada());
   };
 
   useEffect(() => {
@@ -50,16 +56,28 @@ export function useCart() {
 
   const clearCart = () => {
     clearCartLib();
+    clearFarmaciaLib();
+  };
+
+  const setFarmaciaAsignada = (farmacia: FarmaciaAsignada) => {
+    setFarmaciaLib(farmacia);
+  };
+
+  const clearFarmaciaAsignada = () => {
+    clearFarmaciaLib();
   };
 
   return {
     cart,
     total,
     itemCount,
+    farmaciaAsignada,
     addToCart,
     removeFromCart,
     updateQuantity,
     clearCart,
+    setFarmaciaAsignada,
+    clearFarmaciaAsignada,
   };
 }
 

@@ -11,7 +11,21 @@ export interface CartItem {
   stock: number;
 }
 
+export interface FarmaciaAsignada {
+  id: string;
+  codigo: string;
+  nombre: string;
+  direccion?: string;
+  distancia?: number;
+}
+
+interface CartData {
+  items: CartItem[];
+  farmaciaAsignada: FarmaciaAsignada | null;
+}
+
 const CART_KEY = "farmafacil_cart";
+const FARMACIA_KEY = "farmafacil_farmacia_asignada";
 
 export function getCart(): CartItem[] {
   if (typeof window === "undefined") return [];
@@ -87,5 +101,50 @@ export function getCartTotal(): number {
 export function getCartItemCount(): number {
   const cart = getCart();
   return cart.reduce((count, item) => count + item.cantidad, 0);
+}
+
+// ============================================
+// FARMACIA ASIGNADA (para catálogo genérico)
+// ============================================
+
+export function getFarmaciaAsignada(): FarmaciaAsignada | null {
+  if (typeof window === "undefined") return null;
+  
+  try {
+    const farmacia = localStorage.getItem(FARMACIA_KEY);
+    return farmacia ? JSON.parse(farmacia) : null;
+  } catch (error) {
+    console.error("Error reading farmacia asignada:", error);
+    return null;
+  }
+}
+
+export function setFarmaciaAsignada(farmacia: FarmaciaAsignada): void {
+  if (typeof window === "undefined") return;
+  
+  try {
+    localStorage.setItem(FARMACIA_KEY, JSON.stringify(farmacia));
+    window.dispatchEvent(new Event("cart-updated"));
+  } catch (error) {
+    console.error("Error saving farmacia asignada:", error);
+  }
+}
+
+export function clearFarmaciaAsignada(): void {
+  if (typeof window === "undefined") return;
+  
+  try {
+    localStorage.removeItem(FARMACIA_KEY);
+    window.dispatchEvent(new Event("cart-updated"));
+  } catch (error) {
+    console.error("Error clearing farmacia asignada:", error);
+  }
+}
+
+export function getCartData(): CartData {
+  return {
+    items: getCart(),
+    farmaciaAsignada: getFarmaciaAsignada(),
+  };
 }
 
