@@ -4,6 +4,9 @@ import { supabase } from './supabaseClient'
 // TIPOS
 // ============================================
 
+// Tipos de métodos de pago disponibles
+export type MetodoPago = 'bizum' | 'tarjeta' | 'transferencia' | 'efectivo'
+
 export interface Farmacia {
   id: string
   codigo: string
@@ -20,6 +23,12 @@ export interface Farmacia {
   activa: boolean
   created_at: string
   updated_at: string
+  // Métodos de pago
+  metodos_pago: MetodoPago[]
+  bizum_telefono?: string       // Teléfono para recibir Bizum
+  iban?: string                 // IBAN para transferencias
+  titular_cuenta?: string       // Nombre del titular de la cuenta
+  stripe_account_id?: string    // ID de Stripe Connect (para tarjetas)
 }
 
 export interface Producto {
@@ -72,6 +81,113 @@ export interface PedidoItem {
 }
 
 // ============================================
+// FARMACIAS MOCK (para desarrollo)
+// ============================================
+
+const FARMACIAS_MOCK: Farmacia[] = [
+  {
+    id: 'farm_001',
+    codigo: 'sanmiguel',
+    nombre: 'Farmacia San Miguel',
+    email: 'sanmiguel@farmafacil.es',
+    telefono: '961234567',
+    direccion: 'Calle Mayor 15',
+    ciudad: 'Valencia',
+    codigo_postal: '46001',
+    latitud: 39.4699,
+    longitud: -0.3763,
+    activa: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    // Métodos de pago
+    metodos_pago: ['bizum', 'transferencia', 'efectivo'],
+    bizum_telefono: '600123456',
+    iban: 'ES91 2100 0418 4502 0005 1332',
+    titular_cuenta: 'Farmacia San Miguel S.L.',
+  },
+  {
+    id: 'farm_002',
+    codigo: 'central',
+    nombre: 'Farmacia Central',
+    email: 'central@farmafacil.es',
+    telefono: '961234568',
+    direccion: 'Plaza del Ayuntamiento 3',
+    ciudad: 'Valencia',
+    codigo_postal: '46002',
+    latitud: 39.4702,
+    longitud: -0.3768,
+    activa: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    // Métodos de pago
+    metodos_pago: ['tarjeta', 'bizum', 'efectivo'],
+    bizum_telefono: '600234567',
+    stripe_account_id: 'acct_demo_central',
+  },
+  {
+    id: 'farm_003',
+    codigo: 'saludplus',
+    nombre: 'Farmacia Salud Plus',
+    email: 'saludplus@farmafacil.es',
+    telefono: '961234569',
+    direccion: 'Avenida del Puerto 45',
+    ciudad: 'Valencia',
+    codigo_postal: '46021',
+    latitud: 39.4589,
+    longitud: -0.3350,
+    activa: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    // Métodos de pago
+    metodos_pago: ['bizum', 'transferencia'],
+    bizum_telefono: '600345678',
+    iban: 'ES76 0049 1500 0512 3456 7891',
+    titular_cuenta: 'Farmacia Salud Plus S.L.',
+  },
+  {
+    id: 'farm_004',
+    codigo: 'ruzafa',
+    nombre: 'Farmacia Ruzafa',
+    email: 'ruzafa@farmafacil.es',
+    telefono: '961234570',
+    direccion: 'Calle Cuba 12',
+    ciudad: 'Valencia',
+    codigo_postal: '46006',
+    latitud: 39.4615,
+    longitud: -0.3720,
+    activa: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    // Métodos de pago
+    metodos_pago: ['efectivo', 'bizum'],
+    bizum_telefono: '600456789',
+  },
+  {
+    id: 'farm_005',
+    codigo: 'benimaclet',
+    nombre: 'Farmacia Benimaclet',
+    email: 'benimaclet@farmafacil.es',
+    telefono: '961234571',
+    direccion: 'Calle Emilio Baró 22',
+    ciudad: 'Valencia',
+    codigo_postal: '46020',
+    latitud: 39.4850,
+    longitud: -0.3600,
+    activa: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    // Métodos de pago
+    metodos_pago: ['tarjeta', 'transferencia', 'efectivo'],
+    iban: 'ES68 0081 0200 2900 0011 2233',
+    titular_cuenta: 'Farmacia Benimaclet C.B.',
+    stripe_account_id: 'acct_demo_benimaclet',
+  },
+]
+
+// Flag para usar datos mock (cambiar a false cuando Supabase esté configurado)
+const USE_MOCK_DATA = true
+
+// ============================================
 // FARMACIAS
 // ============================================
 
@@ -79,6 +195,11 @@ export interface PedidoItem {
  * Obtiene todas las farmacias activas
  */
 export async function getFarmacias(): Promise<Farmacia[]> {
+  // Usar datos mock para desarrollo
+  if (USE_MOCK_DATA) {
+    return FARMACIAS_MOCK
+  }
+
   const { data, error } = await supabase
     .from('farmacias')
     .select('*')
@@ -87,7 +208,8 @@ export async function getFarmacias(): Promise<Farmacia[]> {
 
   if (error) {
     console.error('Error al obtener farmacias:', error)
-    return []
+    // Fallback a datos mock si hay error
+    return FARMACIAS_MOCK
   }
 
   return data || []
@@ -97,6 +219,11 @@ export async function getFarmacias(): Promise<Farmacia[]> {
  * Obtiene una farmacia por su código único
  */
 export async function getFarmaciaByCodigo(codigo: string): Promise<Farmacia | null> {
+  // Usar datos mock para desarrollo
+  if (USE_MOCK_DATA) {
+    return FARMACIAS_MOCK.find(f => f.codigo === codigo) || null
+  }
+
   const { data, error } = await supabase
     .from('farmacias')
     .select('*')
@@ -106,7 +233,8 @@ export async function getFarmaciaByCodigo(codigo: string): Promise<Farmacia | nu
 
   if (error) {
     console.error('Error al obtener farmacia por código:', error)
-    return null
+    // Fallback a datos mock
+    return FARMACIAS_MOCK.find(f => f.codigo === codigo) || null
   }
 
   return data
@@ -116,6 +244,11 @@ export async function getFarmaciaByCodigo(codigo: string): Promise<Farmacia | nu
  * Obtiene una farmacia por su ID
  */
 export async function getFarmaciaById(id: string): Promise<Farmacia | null> {
+  // Usar datos mock para desarrollo
+  if (USE_MOCK_DATA) {
+    return FARMACIAS_MOCK.find(f => f.id === id) || null
+  }
+
   const { data, error } = await supabase
     .from('farmacias')
     .select('*')
@@ -124,7 +257,8 @@ export async function getFarmaciaById(id: string): Promise<Farmacia | null> {
 
   if (error) {
     console.error('Error al obtener farmacia por ID:', error)
-    return null
+    // Fallback a datos mock
+    return FARMACIAS_MOCK.find(f => f.id === id) || null
   }
 
   return data
