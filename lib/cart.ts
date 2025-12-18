@@ -32,9 +32,22 @@ export function getCart(): CartItem[] {
   
   try {
     const cart = localStorage.getItem(CART_KEY);
-    return cart ? JSON.parse(cart) : [];
+    if (!cart) return [];
+    
+    const parsed = JSON.parse(cart);
+    
+    // Asegurarse de que es un array válido
+    if (!Array.isArray(parsed)) {
+      console.warn("Cart data is not an array, resetting cart");
+      localStorage.removeItem(CART_KEY);
+      return [];
+    }
+    
+    return parsed;
   } catch (error) {
     console.error("Error reading cart:", error);
+    // Limpiar datos corruptos
+    localStorage.removeItem(CART_KEY);
     return [];
   }
 }

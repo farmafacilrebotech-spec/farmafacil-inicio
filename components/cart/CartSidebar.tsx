@@ -1,11 +1,14 @@
 "use client";
 
-import { X, Minus, Plus, Trash2, ShoppingBag, MapPin, Store } from "lucide-react";
+import { useState } from "react";
+import { X, Minus, Plus, Trash2, ShoppingBag, MapPin, Store, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { formatDistance } from "@/lib/distance";
+import { LocationPrompt } from "@/components/location/LocationPrompt";
+import { FarmaciaAsignada } from "@/lib/cart";
 
 interface CartSidebarProps {
   isOpen: boolean;
@@ -13,12 +16,59 @@ interface CartSidebarProps {
 }
 
 export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
-  const { cart, total, updateQuantity, removeFromCart, farmaciaAsignada, clearFarmaciaAsignada } = useCart();
+  const { cart, total, updateQuantity, removeFromCart, farmaciaAsignada, clearFarmaciaAsignada, setFarmaciaAsignada } = useCart();
   const router = useRouter();
+  const [showLocationPrompt, setShowLocationPrompt] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
 
   const handleCheckout = () => {
     onClose();
     router.push("/checkout");
+  };
+
+  // Buscar farmacia más cercana cuando se obtiene la ubicación
+  const handleLocationObtained = async (lat: number, lng: number) => {
+    setIsSearching(true);
+    try {
+      // Obtener farmacias de la API
+      const response = await fetch('/api/farmacias');
+      const data = await response.json();
+      
+      if (data.success && data.farmacias.length > 0) {
+        // Encontrar la más cercana (simplificado - en producción usar haversine)
+        let nearest = data.farmacias[0];
+        let minDist = Infinity;
+        
+        for (const farmacia of data.farmacias) {
+          if (farmacia.latitud && farmacia.longitud) {
+            const dist = Math.sqrt(
+              Math.pow(farmacia.latitud - lat, 2) + 
+              Math.pow(farmacia.longitud - lng, 2)
+            ) * 111; // Aproximación en km
+            
+            if (dist < minDist) {
+              minDist = dist;
+              nearest = farmacia;
+            }
+          }
+        }
+        
+        const farmaciaData: FarmaciaAsignada = {
+          id: nearest.id,
+          codigo: nearest.codigo,
+          nombre: nearest.nombre,
+          direccion: nearest.direccion,
+          distancia: Math.round(minDist * 100) / 100,
+        };
+        
+        setFarmaciaAsignada(farmaciaData);
+      }
+    } catch (error) {
+      console.error('Error buscando farmacia cercana:', error);
+    } finally {
+      setIsSearching(false);
+      setShowLocationPrompt(false);
+    }
   };
 
   // Verificar si hay productos de diferentes farmacias
@@ -164,11 +214,33 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
               </div>
             )}
 
+            {/* Botón para buscar farmacia cercana */}
+            {!farmaciaAsignada && (
+              <Button
+                variant="outline"
+                onClick={() => setShowLocationPrompt(true)}
+                disabled={isSearching}
+                className="w-full border-[#1ABBB3] text-[#1ABBB3] hover:bg-[#1ABBB3] hover:text-white"
+              >
+                {isSearching ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Buscando farmacia...
+                  </>
+                ) : (
+                  <>
+                    <MapPin className="mr-2 h-4 w-4" />
+                    Buscar farmacia cercana
+                  </>
+                )}
+              </Button>
+            )}
+
             {/* Aviso si hay productos de múltiples farmacias */}
             {tieneMultiplesFarmacias && !farmaciaAsignada && (
               <div className="bg-yellow-50 rounded-lg p-3 text-sm text-yellow-800">
                 <p>
-                  Tienes productos de diferentes farmacias. Al pagar, se asignará la farmacia más cercana.
+                  Tienes productos de diferentes farmacias. Usa el botón de arriba para asignar la farmacia más cercana.
                 </p>
               </div>
             )}
@@ -190,6 +262,16 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
           </div>
         )}
       </div>
+
+      {/* Modal de ubicación */}
+      {showLocationPrompt && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4">
+          <LocationPrompt
+            onLocationObtained={handleLocationObtained}
+            onCancel={() => setShowLocationPrompt(false)}
+          />
+        </div>
+      )}
     </>
   );
 }
